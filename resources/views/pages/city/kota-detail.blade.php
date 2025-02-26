@@ -18,7 +18,7 @@
             </div>
         </a>
         <div class="flex flex-col text-center w-fit">
-            <h1 class="font-semibold text-lg leading-[27px] text-white">Tanah Kavling</h1>
+            <h1 class="font-semibold text-lg leading-[27px] text-white">Lihat Semua Kota</h1>
             <p class="text-sm leading-[21px] text-[#909DBF] text-white">{{ $cities->count() }} Kota Ditemukan</p>
         </div>
         <button class="flex w-10 h-10 shrink-0">
@@ -42,9 +42,9 @@
                 // Mengurutkan kota berdasarkan jumlah produk tersedia (descending)
                 $sortedCities = $citiesWithProductCount->sortByDesc('jumlah_produk_tersedia');
             @endphp
-
+{{-- {{ route('detailkategori', [$kategori->slug, $city->slug]) }} --}}
             @forelse ($sortedCities as $city)
-                <a href="{{ route('detailtanakota', $city->slug) }}" class="card">
+                <a href=" " class="card">
                     <div class="flex flex-col gap-4 rounded-[20px] ring-1 ring-[#E9E8ED] pb-4 bg-white overflow-hidden transition-all duration-300 hover:ring-2 hover:ring-[#d40065]">
                         <div class="w-full h-[120px] flex shrink-0 overflow-hidden relative">
                             <img src="{{ asset('storage/' . $city->thumbnail) }}" class="object-cover w-full h-full" alt="thumbnail">
