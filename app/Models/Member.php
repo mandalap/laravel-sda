@@ -4,10 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laratrust\Contracts\LaratrustUser;
+use Laratrust\Traits\HasRolesAndPermissions;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Member extends Model
+class Member extends Authenticatable implements LaratrustUser
 {
     //
+    use HasRolesAndPermissions;
     use SoftDeletes;
     protected $table = "members";
 
@@ -26,4 +30,10 @@ class Member extends Model
         'alamat',
         'thumbnail',
     ];
+
+    public function getAuthIdentifierName()
+    {
+        return 'id'; // untuk mengenali ID dari tabel members
+    }
+
 }
