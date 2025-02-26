@@ -36,38 +36,19 @@
 
     <div id="Feature" class="px-[18px] relative z-10">
         <div class="bg-white p-[18px_16px] rounded-xl overflow-hidden grid grid-cols-4 gap-[27px]">
-            <a href="{{ route('tanahkota') }}">
+            @forelse ( $kategories as $kategori )
+            <a href="{{ route('kategori', $kategori->slug) }}">
                 <div class="flex flex-col gap-2 items-center">
                     <div class="w-[40px] h-[40px] flex shrink-0">
-                        <img src="{{ asset('new/assets/images/icons/location-pin.svg') }}" class="object-cover" alt="icon">
+                        <img src="{{ asset('storage/' . $kategori->icon) }}" class="object-cover" alt="icon">
                     </div>
-                    <p class="font-medium text-center  text-xs text-[#757C98] leading-[21px]">Tanah Kavling</p>
+                    <p class="font-medium text-center  text-xs text-[#757C98] leading-[21px]">{{ $kategori->kategori }}</p>
                 </div>
             </a>
-            <a href="list-city.html">
-                <div class="flex flex-col gap-2 items-center">
-                    <div class="w-[40px] h-[40px] flex shrink-0">
-                        <img src="{{ asset('new/assets/images/icons/land.svg') }}" class="object-cover" alt="icon">
-                    </div>
-                    <p class="font-medium text-center  text-xs text-[#757C98] leading-[21px]">Tanah Ruko</p>
-                </div>
-            </a>
-            <a href="list-city.html">
-                <div class="flex flex-col gap-2 items-center">
-                    <div class="w-[40px] h-[40px] flex shrink-0">
-                        <img src="{{ asset('new/assets/images/icons/house.svg') }}" class="object-cover" alt="icon">
-                    </div>
-                    <p class="font-medium text-center  text-xs text-[#757C98] leading-[21px]">Rumah</p>
-                </div>
-            </a>
-            <a href="list-city.html">
-                <div class="flex flex-col gap-2 items-center">
-                    <div class="w-[40px] h-[40px] flex shrink-0">
-                        <img src="{{ asset('new/assets/images/icons/apartments.svg') }}" class="object-cover" alt="icon">
-                    </div>
-                    <p class="font-medium text-center  text-xs text-[#757C98] leading-[21px]">Ruko</p>
-                </div>
-            </a>
+            @empty
+            <p>Belum ada kategori</p>
+            @endforelse
+
             <a href="list-city.html">
                 <div class="flex flex-col gap-2 items-center">
                     <div class="w-[40px] h-[40px] flex shrink-0">
@@ -105,21 +86,26 @@
 
     <section id="height" class="flex flex-col p-2 gap-4 bg-[#F5F6F8] mt-[30px]"></section>
 
+
     <section id="Popular" class="flex flex-col gap-4">
         <div class="flex justify-between items-center px-5 mt-5">
             <h2 class="font-bold">Properti Popular</h2>
-            <a href="#">
-                <div class="flex gap-2 items-center">
+            @if($popularKelompok = $kelompoks->where('slug', 'popular')->first())
+            <a href="{{ route('lihatsemua', ['propertiType' => $popularKelompok->slug]) }}">
+                <div class="flex gap-1 items-center">
                     <span>Lihat Semua</span>
                     <img src="{{ asset('new/assets/images/icons/arrow-right.svg') }}" class="flex w-6 h-6 shrink-0" alt="icon">
                 </div>
-            </a>
+                </a>
+            @endif
         </div>
+
         <div class="overflow-x-hidden gap-4 w-full swiper">
             <div class="swiper-wrapper">
-                @forelse ($projects as $project)
+                @forelse ($projects->where('kelompok_id', $kelompoks->where('slug', 'popular')->first()->id) as $project)
                 <div class="swiper-slide !w-fit">
-                    <a href="details.html" class="card">
+                    {{-- {{ route('detailproject', [$project->jenis->slug, $project->kategori->slug, $project->slug]) }} --}}
+                    <a href="{{ route('detailproject', [$project->jenis->slug, $project->kategori->slug, $project->slug]) }}" class="card">
                         <div class="flex flex-col w-[250px] shrink-0 rounded-[30px] border border-[#F1F2F6] p-4 pb-5 gap-[10px] hover:border-[#d40065] text-black transition-all duration-300">
                             <div class="relative">
                                 <button class="absolute top-4 right-4 w-max rounded-full p-2 bg-[#d40065] text-white text-xs">
@@ -131,7 +117,7 @@
                             </div>
 
                             <div class="flex flex-col gap-3">
-                                <h3 class="font-semibold text-lg leading-[27px] line-clamp-2 min-h-[54px]">{{ $project->nama_project }}</h3>
+                                <h3 class="font-semibold text-sm leading-[27px] line-clamp-2 min-h-[54px]">{{ $project->nama_project }}</h3>
                                 <hr class="border-[#F1F2F6]">
                                 <div class="flex items-center gap-[6px]">
                                     <img src="{{ asset('new/assets/images/icons/location.svg') }}" class="flex w-5 h-5 shrink-0"
@@ -141,7 +127,23 @@
                                 <div class="flex items-center gap-[6px]">
                                     <img src="{{ asset('new/assets/images/icons/3dcube.svg') }}" class="flex w-5 h-5 shrink-0"
                                         alt="icon">
-                                    <p class="text-sm text-ngekos-grey">{{ $project->kategori->kategori }}</p>
+                                    <p class="text-sm text-ngekos-grey"></p>
+                                    <div class="flex items-center">
+                                        <p class="text-sm text-ngekos-grey">{{ $project->kategori->kategori }} </p>
+                                        @if ($project->jenis->jenis == 'Jual')
+                                            <span class="inline-flex items-center px-2 py-1 ml-1 text-xs font-medium text-red-700 bg-red-50 rounded-md ring-1 ring-inset ring-red-600/10">
+                                                Jual
+                                            </span>
+                                        @elseif ($project->jenis->jenis == 'Sewa')
+                                            <span class="inline-flex items-center px-2 py-1 ml-1 text-xs font-medium text-blue-700 bg-blue-50 rounded-md ring-1 ring-inset ring-blue-700/10">
+                                                Sewa
+                                            </span>
+                                        @elseif ($project->jenis->jenis == 'Jual/Sewa')
+                                            <span class="inline-flex items-center px-2 py-1 ml-1 text-xs font-medium text-green-700 bg-green-50 rounded-md ring-1 ring-inset ring-green-600/20">
+                                                Jual/Sewa
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-[6px]">
                                     <img src="{{ asset('new/assets/images/icons/profile-2user.svg') }}" class="flex w-5 h-5 shrink-0"
@@ -174,17 +176,18 @@
 
     <section id="Cities" class="flex flex-col p-5 gap-4 bg-[#F5F6F8] mt-[30px]">
         <div class="flex justify-between items-center">
-            <h2 class="font-bold">Cari Kota</h2>
-            <a href="#">
-                <div class="flex gap-2 items-center">
+            <h2 class="font-bold">Pilihan Lokasi</h2>
+            <a href="{{ route('lihatkota') }}">
+                <div class="flex gap-1 items-center">
                     <span>Lihat Semua</span>
                     <img src="{{ asset('new/assets/images/icons/arrow-right.svg') }}" class="flex w-6 h-6 shrink-0" alt="icon">
                 </div>
             </a>
+
         </div>
         <div class="grid grid-cols-2 gap-4">
             @forelse ($cities as $city)
-            <a href="cities.html" class="card">
+            <a href="{{ route('properti', ['citiesType' => $city->slug]) }}" class="card">
                 <div
                     class="flex items-center rounded-[22px] p-[10px] gap-3 bg-white border border-white overflow-hidden hover:border-emerald-text-emerald-600 transition-all duration-300 hover:border-[#d40065] ">
                     <div
@@ -192,7 +195,7 @@
                         <img src="{{ asset('storage/' . $city->thumbnail) }}" class="object-cover w-full h-full" alt="icon">
                     </div>
                     <div class="flex flex-col gap-[1px]">
-                        <h3 class="text-sm"> {{ $city->regency->name }}</h3>
+                        <p class="text-sm font-semibold"> {{ $city->regency->name }}</p>
                         <p class="text-sm text-ngekos-grey"> {{ $city->project->count() }} Properti</p>
                     </div>
                 </div>
@@ -209,23 +212,25 @@
     <section id="Best" class="flex flex-col gap-4 px-5 mt-[30px] ">
         <div class="flex justify-between items-center">
             <h2 class="font-bold">Kavling Terbaik</h2>
-            <a href="#">
-                <div class="flex gap-2 items-center">
+            @if($popularKelompok = $kelompoks->where('slug', 'terbaik')->first())
+            <a href="{{ route('lihatsemua', ['propertiType' => $popularKelompok->slug]) }}">
+                <div class="flex gap-1 items-center">
                     <span>Lihat Semua</span>
                     <img src="{{ asset('new/assets/images/icons/arrow-right.svg') }}" class="flex w-6 h-6 shrink-0" alt="icon">
                 </div>
             </a>
+            @endif
         </div>
         <div class="flex flex-col gap-4">
-            @forelse ($kavling as $kavlingterbaik)
-            <a href="details.html" class="card">
+            @forelse ($kavling->where('kelompok_id', $kelompoks->where('slug', 'terbaik')->first()->id) as $kavlingterbaik)
+            <a href="{{ route('detailproject', [$kavlingterbaik->jenis->slug, $kavlingterbaik->kategori->slug, $kavlingterbaik->slug]) }}" class="card">
                 <div
                     class="flex rounded-[30px] border border-[#F1F2F6] p-2 gap-4 bg-white hover:border-[#d40065] transition-all duration-300">
                     <div class="flex w-[120px] h-[183px] shrink-0 rounded-[30px] bg-[#D9D9D9] overflow-hidden">
                         <img src="{{ asset('storage/' . $kavlingterbaik->thumbnail) }}" class="object-cover w-full h-full" alt="icon">
                     </div>
                     <div class="flex flex-col gap-3 w-full">
-                        <h3 class="font-semibold text-lg leading-[27px] line-clamp-2 min-h-[54px]">{{ $kavlingterbaik->nama_project }}</h3>
+                        <h3 class="font-semibold text-sm leading-[27px] line-clamp-2 min-h-[54px]">{{ $kavlingterbaik->nama_project }}</h3>
                         <hr class="border-[#F1F2F6]">
                         <div class="flex items-center gap-[6px]">
                             <img src="{{ asset('new/assets/images/icons/location.svg') }}" class="flex w-5 h-5 shrink-0" alt="icon">
@@ -263,19 +268,21 @@
     <section id="Rekomendasi" class="flex flex-col gap-4 mt-[30px] ">
         <div class="flex justify-between items-center px-5">
             <h2 class="font-bold">Hunian Rekomendasi</h2>
-            <a href="#">
-                <div class="flex gap-2 items-center">
+            @if($popularKelompok = $kelompoks->where('slug', 'rekomendasi')->first())
+            <a href="{{ route('lihatsemua', ['propertiType' => $popularKelompok->slug]) }}">
+                <div class="flex gap-1 items-center">
                     <span>Lihat Semua</span>
                     <img src="{{ asset('new/assets/images/icons/arrow-right.svg') }}" class="flex w-6 h-6 shrink-0"
                         alt="icon">
                 </div>
             </a>
+            @endif
         </div>
         <div class="overflow-x-hidden w-full swiper">
             <div class="swiper-wrapper">
                 @forelse ($rumah as $rumahterbaik)
                 <div class="swiper-slide !w-fit">
-                    <a href="details.html" class="card">
+                    <a href="{{ route('detailproject', [$rumahterbaik->jenis->slug, $rumahterbaik->kategori->slug, $rumahterbaik->slug]) }}" class="card">
                         <div
                             class="flex flex-col w-[250px] shrink-0 rounded-[30px] border border-[#F1F2F6] p-4 pb-5 gap-[10px] hover:border-[#d40065] text-black transition-all duration-300">
                             <div class="flex w-full h-[150px] shrink-0 rounded-[30px] bg-[#D9D9D9] overflow-hidden">
@@ -283,7 +290,7 @@
                                     alt="thumbnail">
                             </div>
                             <div class="flex flex-col gap-3">
-                                <h3 class="font-semibold text-lg leading-[27px] line-clamp-2 min-h-[54px]">
+                                <h3 class="font-semibold text-sm leading-[27px] line-clamp-2 min-h-[54px]">
                                     {{ $rumahterbaik->nama_project }}
                                 </h3>
                                 <hr class="border-[#F1F2F6]">
@@ -321,12 +328,14 @@
     <section id="Listing" class="flex flex-col p-5 gap-4 bg-[#F5F6F8] mt-[30px]">
         <div class="flex justify-between items-center">
             <h2 class="font-bold">Listing Terbaru</h2>
-            <a href="#">
+            @if($popularKelompok = $kelompoks->where('slug', 'terbaru')->first())
+            <a href="{{ route('lihatsemua', ['slug' => $popularKelompok->slug]) }}">
                 <div class="flex gap-2 items-center">
                     <span>Lihat Semua</span>
                     <img src="{{ asset('new/assets/images/icons/arrow-right.svg') }}" class="flex w-6 h-6 shrink-0" alt="icon">
                 </div>
             </a>
+            @endif
         </div>
         <div class="gap-4 swiper grider-cols-2">
             <div class="swiper-wrapper">

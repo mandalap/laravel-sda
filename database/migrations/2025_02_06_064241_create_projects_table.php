@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->foreignId('developer_id')->constrained()->cascadeOnDelete();
-            $table->integer('lokasi_id');
-            $table->integer('kategori_id');
+            $table->foreignId('lokasi_id')->constrained('lokasi')->cascadeOnDelete();
+            $table->foreignId('kategori_id')->constrained('kategori')->cascadeOnDelete();
+            $table->foreignId('jenis_id')->constrained('jenis')->cascadeOnDelete();
             $table->string('nama_project');
             $table->string('slug');
             $table->text('alamat_project');
@@ -27,7 +28,7 @@ return new class extends Migration
             $table->string('status_sertifikat')->nullable();
             $table->string('transaksi')->nullable();
             $table->string('status')->default('tampil');
-            $table->string('kelompok')->nullable();
+            $table->foreignId('kelompok_id')->constrained('kelompok')->cascadeOnDelete();
             $table->string('is_approved')->nullable();
             $table->string('thumbnail')->nullable();
             $table->softDeletes();

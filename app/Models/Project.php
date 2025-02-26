@@ -16,6 +16,7 @@ class Project extends Model
         'developer_id',
         'lokasi_id',
         'kategori_id',
+        'jenis_id',
         'nama_project',
         'slug',
         'alamat_project',
@@ -27,7 +28,7 @@ class Project extends Model
         'status_sertifikat',
         'transaksi',
         'status',
-        'kelompok',
+        'kelompok_id',
         'is_approved',
         'thumbnail',
     ];
@@ -51,6 +52,15 @@ class Project extends Model
     public function kategori() :BelongsTo
     {
         return $this->belongsTo(Kategori::class);
+    }
+
+    public function jenis() :BelongsTo
+    {
+        return $this->belongsTo(Jenis::class);
+    }
+    public function kelompok() :BelongsTo
+    {
+        return $this->belongsTo(Kelompok::class);
     }
 
     protected static function booted()

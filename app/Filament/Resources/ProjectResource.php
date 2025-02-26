@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Developer;
+use App\Models\Jenis;
 use App\Models\Kategori;
+use App\Models\Kelompok;
 use App\Models\Lokasi;
 use App\Models\Project;
 use Filament\Forms;
@@ -53,6 +55,12 @@ class ProjectResource extends Resource
                     Select::make('kategori_id')
                     ->label('Kategori')
                     ->options(Kategori::all()->pluck('kategori', 'id'))
+                    ->searchable()
+                    ->required(),
+
+                    Select::make('jenis_id')
+                    ->label('Jenis')
+                    ->options(Jenis::all()->pluck('jenis', 'id'))
                     ->searchable()
                     ->required(),
 
@@ -117,13 +125,12 @@ class ProjectResource extends Resource
                     ])
                     ->required(),
 
-                    Select::make('kelompok')
-                    ->options([
-                        'Populer' => 'Populer',
-                        'Terbaru' => 'Terbaru',
-                        'Rekomendasi' => 'Rekomendasi',
-                    ])
+                    Select::make('kelompok_id')
+                    ->label('Kelompok')
+                    ->options(Kelompok::all()->pluck('kelompok', 'id'))
+                    ->searchable()
                     ->required(),
+
 
                     Select::make('is_approved')
                     ->options([
@@ -189,7 +196,9 @@ class ProjectResource extends Resource
                 ->label('Nama Project')
                 ->searchable(),
 
-                TextColumn::make('kelompok')
+                TextColumn::make('kelompok.kelompok')
+                ->label('Kelompok')
+                ->formatStateUsing(fn ($state, $record) => $record->kelompok->kelompok ?? 'No Kelompok')
                 ->sortable()
                 ->searchable(),
 

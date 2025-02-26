@@ -16,8 +16,8 @@
             class="absolute top-0 w-full h-[143px] bg-[linear-gradient(180deg,#070707_0%,rgba(7,7,7,0)_100%)] z-10">
         </div>
 
-        <div id="TopNavAbsolute" class="absolute top-[50px] flex items-center justify-between w-full px-5 z-10">
-            <a href="{{ route('detailtanakota', $project->lokasi->slug) }}"
+        <div id="TopNavAbsolute" class="absolute top-[30px] flex items-center justify-between w-full px-5 z-10">
+            <a href="{{ route('detailkategori', [$kategori->slug, $project->lokasi->slug]) }}"
                 class="flex overflow-hidden justify-center items-center w-12 h-12 rounded-full backdrop-blur-sm shrink-0 bg-white/10">
                 <img src="{{ asset('new/assets/images/icons/arrow-left-transparent.svg') }}" class="w-8 h-8" alt="icon">
             </a>
@@ -190,8 +190,13 @@
                     <p class="font-bold text-lg leading-[30px] text-white">
                         Rp 100.000
                     </p>
-                    <a href="{{ route('custinfo', $project->slug) }}"
+                    @if ($project->project_product->where('status', 'Tersedia')->count() == '0')
+                        <a href="#"
+                            class="flex shrink-0 rounded-full py-[14px] px-5 bg-white font-bold text-[#d40065] hover:bg-black hover:text-white">Tidak tersedia</a>
+                    @else
+                    <a href="{{ route('custinfo', [$project->jenis->slug, $project->kategori->slug, $project->slug]) }}"
                         class="flex shrink-0 rounded-full py-[14px] px-5 bg-white font-bold text-[#d40065] hover:bg-black hover:text-white">Booking Sekarang</a>
+                    @endif
                 </div>
             </div>
         </div>

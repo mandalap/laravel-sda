@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\CekBookingController;
 use App\Http\Controllers\DetailsController;
 use App\Http\Controllers\ListCityController;
+use App\Http\Controllers\PencarianController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,15 +36,29 @@ Route::get('/logout', [RegisterController::class, 'logout'])->name('logout');
 /// Beranda
 Route::get('/', [BerandaController::class, 'beranda'])->name('beranda');
 
-
 /// List City
-Route::get('/tanah-kota', [ListCityController::class, 'tanahkota'])->name('tanahkota');
-Route::get('/tanah-kota/{slug}', [ListCityController::class, 'detailtanakota'])->name('detailtanakota');
+Route::get('/jual/{slug}', [ListCityController::class, 'kategori'])->name('kategori');
+Route::get('/{kategori}/{cities}', [ListCityController::class, 'detailkategori'])->name('detailkategori');
+Route::get('/lihat-semua', [ListCityController::class, 'lihat'])->name('lihatsemua');
+
+Route::get('/lihat-kota', [ListCityController::class, 'lihatkota'])->name('lihatkota');
+Route::get('/properti', [ListCityController::class, 'properti'])->name('properti');
 
 /// Details
-Route::get('/tanah-kavling/{slug}', [DetailsController::class, 'index'])->name('detailstanahkavling');
-Route::get('/tanah-kavling/{slug}/cust-info', [DetailsController::class, 'custinfo'])->name('custinfo');
-Route::get('/tanah-kavling/{slug}/checkout', [DetailsController::class, 'checkout'])->name('checkout');
+Route::get('/{jenis}/{kategori}/{project}', [DetailsController::class, 'index'])->name('detailproject');
+Route::get('/{jenis}/{kategori}/{project}/info', [DetailsController::class, 'custinfo'])->name('custinfo');
+
+// checkcout
+Route::post('/checkout/{project}', [DetailsController::class, 'checkout'])->name('checkout');
+/// Lihat Semua
 
 
+/// Check Booking
+Route::get('/check-booking', [CekBookingController::class, 'index'])->name('checkbooking');
 
+/// Pencarian
+Route::get('/pencarian', [PencarianController::class, 'index'])->name('pencarian');
+
+
+// Profil
+Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
